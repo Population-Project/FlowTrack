@@ -1,0 +1,36 @@
+name: FlowTrack CSV Auto Update
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # 5분마다 실행
+  workflow_dispatch:        # 수동 실행 버튼
+
+jobs:
+  run-flowtrack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build project (skip tests)
+        run: ./gradlew -x test bootJar
+
+      - name: Run FlowTrack CLI
+        env:
+          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
+        run: java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar
+
+      - name: Commit CSV results
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto update CSV data [$(date)]" || echo "No changes to commit"
+          git push
