@@ -22,8 +22,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build project (skip tests)
-        run: ./gradlew -x test bootJar
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew --debug build
 
       - name: Run FlowTrack CLI
         env:
