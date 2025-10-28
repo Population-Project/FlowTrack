@@ -5,6 +5,9 @@ on:
     - cron: "*/5 * * * *"   # 5분마다 실행 (UTC 기준)
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   run-flowtrack:
     runs-on: ubuntu-latest
