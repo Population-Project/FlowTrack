@@ -2,7 +2,7 @@ name: FlowTrack CSV Auto Update
 
 on:
   schedule:
-    - cron: "*/60 * * * *"   
+    - cron: "99 99 99 99 99"  
   workflow_dispatch:
 
 permissions:
