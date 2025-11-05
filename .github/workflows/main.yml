@@ -2,7 +2,7 @@ name: FlowTrack CSV Auto Update
 
 on:
   schedule:
-    - cron: "0 */3 * * *"
+    - cron: "0 */3 * * *" # 3시간마다 실행
   workflow_dispatch:
 
 permissions:
@@ -30,10 +30,31 @@ jobs:
           chmod +x ./gradlew
           ./gradlew -x test bootJar
 
-      - name: Run FlowTrack CLI
+      # ------------------------------
+      # 각 Task별로 개별 실행 (안 멈춤)
+      # ------------------------------
+
+      - name: Run Area CLI
         env:
           TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
-        run: java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar
+        run: |
+          java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar --task=area
+
+      - name: Run Highway CLI
+        env:
+          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
+        run: |
+          java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar --task=highway
+
+      - name: Run Road CLI
+        env:
+          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
+        run: |
+          java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar --task=road
+
+      # ------------------------------
+      # 변경된 CSV 자동 커밋
+      # ------------------------------
 
       - name: Commit CSV results
         env:
@@ -42,6 +63,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Auto update CSV data [$(date)]" || echo "No changes to commit"
+          git commit -m "Auto update CSV data [$(date '+%Y-%m-%d %H:%M:%S')]" || echo "No changes to commit"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
-
