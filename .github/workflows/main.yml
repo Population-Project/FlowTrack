@@ -34,6 +34,14 @@ jobs:
       # 각 Task별 개별 실행 (서울시 + EX API)
       # ------------------------------
 
+      - name: Run Road CLI (서울시 도로 교통)
+        env:
+          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
+        run: |
+          java -Dspring.profiles.active=cli \
+               -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
+               --task=road
+
       - name: Run Area CLI (서울시 지역 교통)
         env:
           TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
@@ -50,13 +58,6 @@ jobs:
                -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
                --task=highway
 
-      - name: Run Road CLI (서울시 도로 교통)
-        env:
-          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
-        run: |
-          java -Dspring.profiles.active=cli \
-               -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
-               --task=road
 
       # ------------------------------
       # 변경된 CSV 자동 커밋
