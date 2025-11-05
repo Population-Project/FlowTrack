@@ -4,6 +4,7 @@ import com.example.flowtrack.seoulroad.dto.RoadInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,11 +23,20 @@ public class RoadMultiThreadService {
         int threads = 10;
         ExecutorService executor = Executors.newFixedThreadPool(threads);
 
-        // 🔹 try-with-resources로 자동 닫기 보장
-        try (PrintWriter writer = new PrintWriter(new FileWriter(outPath, false))) {
+        boolean append = true;
+        File file = new File(outPath);
+        boolean fileExists = file.exists();
 
-            // 🔹 CSV 헤더 기록
-            writer.println("link_id,road_name,st_node_nm,ed_node_nm,map_dist,reg_cd,speed,travel_time");
+        // 🔹 try-with-resources로 자동 닫기 보장
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file, append))) {
+
+            // 🔹 기존 파일이 없을 때만 헤더 작성
+            if (!fileExists) {
+                writer.println("link_id,road_name,st_node_nm,ed_node_nm,map_dist,reg_cd,speed,travel_time");
+            } else {
+                // 기존 파일이 있으면 구분을 위해 한 줄 띄움
+                writer.println();
+            }
             writer.flush();
 
             // 🔹 각 linkId 작업을 스레드 풀에 제출

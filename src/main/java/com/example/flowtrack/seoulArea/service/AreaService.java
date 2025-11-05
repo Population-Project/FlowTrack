@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.List;
@@ -36,10 +37,19 @@ public class AreaService {
 
 
     public void saveAreas(List<AreaDto> areas, String outPath) throws Exception {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(outPath))) {
+        // append=true → 기존 파일 뒤에 이어서 씀
+        boolean append = true;
+        boolean fileExists = new File(outPath).exists();
 
-            writer.println("지역명,지역코드,혼잡도지표,인구최소,인구최대,남성비율,여성비율,10대비율,20대비율,30대비율,40대비율,50대비율,60대비율,70대비율,상주인구비율,비상주인구비율,업데이트시간,상권현황,결제건수,상권남성비율,상권여성비율,상권10대비율,상권20대비율,상권30대비율,상권40대비율,상권50대비율,상권60대비율,상권업데이트시간");
-            writer.flush();
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outPath, append))) {
+
+            // 파일이 처음 만들어지는 경우에만 헤더 추가
+            if (!fileExists) {
+                writer.println("지역명,지역코드,혼잡도지표,인구최소,인구최대,남성비율,여성비율,10대비율,20대비율,30대비율,40대비율,50대비율,60대비율,70대비율,상주인구비율,비상주인구비율,업데이트시간,상권현황,결제건수,상권남성비율,상권여성비율,상권10대비율,상권20대비율,상권30대비율,상권40대비율,상권50대비율,상권60대비율,상권업데이트시간");
+            } else {
+                // 기존 파일이 있으면 구분을 위해 한 줄 띄움
+                writer.println();
+            }
 
             // 데이터 작성 (카드 결제 데이터 추가)
             for (AreaDto area : areas) {
