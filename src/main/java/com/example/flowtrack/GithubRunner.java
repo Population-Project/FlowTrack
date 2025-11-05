@@ -9,6 +9,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import reactor.netty.http.HttpResources;
+
+import java.time.Duration;
 
 @Slf4j
 @Component
@@ -55,6 +58,12 @@ public class GithubRunner implements ApplicationRunner {
         }
 
         log.info("🏁 모든 CLI 작업이 종료되었습니다.");
+
+        try {
+            HttpResources.disposeLoopsAndConnectionsLater(Duration.ZERO, Duration.ZERO).block();
+        } catch (Exception e) {
+            log.warn("⚠️ Reactor 자원 해제 중 경고: {}", e.getMessage());
+        }
         System.exit(0); // ✅ CLI 실행 완료 후 강제 종료
     }
 
