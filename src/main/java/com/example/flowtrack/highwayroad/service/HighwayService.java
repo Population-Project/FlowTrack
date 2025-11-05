@@ -3,9 +3,14 @@ package com.example.flowtrack.highwayroad.service;
 import com.example.flowtrack.common.config.ExProps;
 import com.example.flowtrack.highwayroad.dto.HighwayResponse;
 import com.example.flowtrack.highwayroad.dto.HighwayInfoDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
 import java.io.File;
@@ -14,6 +19,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class HighwayService {
@@ -38,20 +44,44 @@ public class HighwayService {
     /**
      * API 호출 후 JSON → DTO 매핑
      */
-    private HighwayResponse fetchHighwayInfo() throws Exception {
+    private HighwayResponse fetchHighwayInfo() {
         String url = exProps.getBaseUrl()
                 + "odtraffic/trafficAmountByCongest"
                 + "?key=" + exProps.getApiKey()
                 + "&type=json";
 
-        String body = restClient.get()
-                .uri(url)
-                .header("Accept", "application/json")
-                .retrieve()
-                .body(String.class);
+        try {
+            String body = restClient.get()
+                    .uri(url)
+                    .header("Accept", "application/json")
+                    .retrieve()
+                    .body(String.class);
 
-        return objectMapper.readValue(body.getBytes(StandardCharsets.UTF_8), HighwayResponse.class);
+            return objectMapper.readValue(body.getBytes(StandardCharsets.UTF_8), HighwayResponse.class);
+
+        } catch (ResourceAccessException e) {
+            // 외부 API 연결 실패 (ex: timeout, DNS 오류 등)
+            log.error("🚨 [HighwayService] EX API 연결 실패: {}", e.getMessage());
+            return new HighwayResponse(); // 빈 객체 리턴 or null
+        } catch (HttpClientErrorException e) {
+            // 4xx 에러 (잘못된 요청)
+            log.error("🚨 [HighwayService] 잘못된 요청: {}", e.getMessage());
+            return new HighwayResponse();
+        } catch (HttpServerErrorException e) {
+            // 5xx 에러 (서버 내부 오류)
+            log.error("🚨 [HighwayService] 서버 오류: {}", e.getMessage());
+            return new HighwayResponse();
+        } catch (JsonProcessingException e) {
+            // JSON 파싱 실패
+            log.error("🚨 [HighwayService] JSON 파싱 실패: {}", e.getMessage());
+            return new HighwayResponse();
+        } catch (Exception e) {
+            // 기타 예외
+            log.error("🚨 [HighwayService] 알 수 없는 오류 발생: {}", e.getMessage());
+            return new HighwayResponse();
+        }
     }
+
 
 
     private void saveToCsv(List<HighwayInfoDto> data, String outPath) throws Exception {
