@@ -22,25 +22,40 @@ public class GithubRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        try {
-            areaController.exportTraffic();
-        } catch (Exception e) {
-            log.error("❌ AreaController 오류: {}", e.getMessage());
+        if (args.containsOption("task")) {
+            String task = args.getOptionValues("task").get(0);
+            log.info("🚀 [CLI 실행 시작] 실행할 작업: {}", task);
+
+            try {
+                switch (task) {
+                    case "area" -> {
+                        log.info("🗺️ 지역 교통 데이터 수집을 시작합니다.");
+                        areaController.exportTraffic();
+                        log.info("✅ 지역 교통 데이터 수집이 완료되었습니다.");
+                    }
+                    case "highway" -> {
+                        log.info("🛣️ 고속도로 교통 데이터 수집을 시작합니다.");
+                        highwayController.getHighwayInfo();
+                        log.info("✅ 고속도로 교통 데이터 수집이 완료되었습니다.");
+                    }
+                    case "road" -> {
+                        log.info("🚗 도로별 교통 데이터 수집을 시작합니다.");
+                        roadController.exportTraffic();
+                        log.info("✅ 도로별 교통 데이터 수집이 완료되었습니다.");
+                    }
+                    default -> log.warn("⚠️ 알 수 없는 작업: {}", task);
+                }
+            } catch (Exception e) {
+                log.error("❌ [{}] 실행 중 오류 발생: {}", task, e.getMessage());
+            }
+
+        } else {
+            log.info("ℹ️ 실행할 작업이 지정되지 않았습니다. (--task 인자 필요)");
+            log.info("예시: --task=area | --task=highway | --task=road");
         }
 
-        try {
-            highwayController.getHighwayInfo();
-        } catch (Exception e) {
-            log.error("❌ HighwayController 오류: {}", e.getMessage());
-        }
-
-        try {
-            roadController.exportTraffic();
-        } catch (Exception e) {
-            log.error("❌ RoadController 오류: {}", e.getMessage());
-        }
-
-        log.info("✅ 모든 CLI 작업 완료");
+        log.info("🏁 모든 CLI 작업이 종료되었습니다.");
     }
+
 
 }
