@@ -87,6 +87,8 @@ public class AreaService {
                 writer.println(line);
             }
         }
+
+        System.out.println("모든 데이터 저장 완료: " + outPath);
     }
 
     private AreaDto parseXmlToAreaDto(String xml) throws Exception {
