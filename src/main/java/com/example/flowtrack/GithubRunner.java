@@ -20,8 +20,8 @@ public class GithubRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        areaController.exportTraffic();
         highwayController.getHighwayInfo();
         roadController.exportTraffic();
-        areaController.exportTraffic();
     }
 }
