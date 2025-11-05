@@ -2,7 +2,7 @@ name: FlowTrack CSV Auto Update
 
 on:
   schedule:
-    - cron: "0 */3 * * *" # 3시간마다 실행
+    - cron: "0 */1 * * *"
   workflow_dispatch:
 
 permissions:
@@ -31,26 +31,32 @@ jobs:
           ./gradlew -x test bootJar
 
       # ------------------------------
-      # 각 Task별로 개별 실행 (안 멈춤)
+      # 각 Task별 개별 실행 (서울시 + EX API)
       # ------------------------------
 
-      - name: Run Area CLI
+      - name: Run Area CLI (서울시 지역 교통)
         env:
           TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
         run: |
-          java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar --task=area
+          java -Dspring.profiles.active=cli \
+               -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
+               --task=area
 
-      - name: Run Highway CLI
+      - name: Run Highway CLI (고속도로 교통)
         env:
-          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
+          EX_API_KEY: "7730526404"
         run: |
-          java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar --task=highway
+          java -Dspring.profiles.active=cli \
+               -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
+               --task=highway
 
-      - name: Run Road CLI
+      - name: Run Road CLI (서울시 도로 교통)
         env:
           TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
         run: |
-          java -Dspring.profiles.active=cli -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar --task=road
+          java -Dspring.profiles.active=cli \
+               -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
+               --task=road
 
       # ------------------------------
       # 변경된 CSV 자동 커밋
