@@ -55,6 +55,7 @@ public class GithubRunner implements ApplicationRunner {
         }
 
         log.info("🏁 모든 CLI 작업이 종료되었습니다.");
+        System.exit(0); // ✅ CLI 실행 완료 후 강제 종료
     }
 
 
