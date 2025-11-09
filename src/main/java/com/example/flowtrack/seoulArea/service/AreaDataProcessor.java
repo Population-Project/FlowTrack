@@ -14,6 +14,7 @@ public class AreaDataProcessor {
 
     private final ExcelReader excelReader;
     private final AreaService areaService;
+    private final static String outPath = "seoul_area_11-2.csv";
 
     public void processExcel(String excelPath) throws Exception {
         List<String> areaNames = excelReader.readSeoulAreaNames(excelPath);
@@ -29,6 +30,6 @@ public class AreaDataProcessor {
         }
 
         // 3. 수집된 데이터를 CSV로 저장
-       areaService.saveAreas(results, "seoul_area.csv");
+       areaService.saveAreas(results, outPath);
     }
 }
