@@ -2,10 +2,12 @@ package com.example.flowtrack.sk.tradeArea;
 
 import com.example.flowtrack.sk.tradeArea.dto.TradeAreaMetaResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Profile("!cli")
 @Service
 public class TradeAreaMetaService {
 
