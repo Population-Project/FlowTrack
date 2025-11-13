@@ -7,7 +7,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-@Profile("!cli")
+@Profile("sk")
 @Service
 public class TradeAreaMetaService {
 

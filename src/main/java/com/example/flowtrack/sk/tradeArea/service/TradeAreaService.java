@@ -1,12 +1,14 @@
 package com.example.flowtrack.sk.tradeArea.service;
 
 import com.example.flowtrack.sk.tradeArea.dto.TradeAreaResponse;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
+@Profile("sk")
 @Service
 public class TradeAreaService {
 

@@ -9,3 +9,7 @@ seoul:
 ex:
   base-url: https://data.ex.co.kr/openapi/
   api-key: 7730526404
+
+sk:
+  api:
+    enabled: false
