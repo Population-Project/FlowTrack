@@ -3,10 +3,12 @@ package com.example.flowtrack.sk.tradeArea.controller;
 import com.example.flowtrack.sk.tradeArea.TradeAreaMetaService;
 import com.example.flowtrack.sk.tradeArea.dto.TradeAreaMetaResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Profile("sk")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/areas")
