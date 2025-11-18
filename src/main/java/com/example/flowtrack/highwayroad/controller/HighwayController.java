@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class HighwayController {
 
     private final HighwayService highwayService;
-    private final static String outPath = "highway_11-2.csv";
+    private final static String outPath = "highway_11-3.csv";
 
     @GetMapping
     public String getHighwayInfo() throws Exception {
