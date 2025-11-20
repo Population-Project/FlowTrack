@@ -1,0 +1,50 @@
+name: FlowTrack Road Update
+
+on:
+  schedule:
+    - cron: "0 */1 * * *"
+  workflow_dispatch:
+
+jobs:
+  run-road:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew -x test bootJar
+
+      - name: Run ROAD CLI
+        env:
+          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
+        run: |
+          java -Dspring.profiles.active=cli \
+               -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
+               --task=road
+
+      - name: Commit CSV results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto update ROAD CSV data [$(date '+%Y-%m-%d %H:%M:%S')]" || echo "No changes"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
