@@ -13,9 +13,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -88,7 +86,8 @@ public class HighwayService {
         File file = new File(outPath);
         boolean fileExists = file.exists();
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) { // append = true
+        try (PrintWriter writer = new PrintWriter(
+                new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
 
             // 기존 파일이 없으면 헤더 추가, 있으면 한 줄 띄움
             if (!fileExists) {
