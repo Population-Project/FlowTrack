@@ -7,6 +7,8 @@ import com.example.flowtrack.seoulroad.dto.RoadMetaResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
@@ -25,6 +27,17 @@ public class RoadService {
     private int startIndex = 1;
     private int endIndex = 1;
 
+    @Bean
+    public RestClient restClient() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(3000); // 3초 연결 제한
+        factory.setReadTimeout(5000);    // 5초 응답 제한
+
+        return RestClient.builder()
+                .requestFactory(factory)
+                .build();
+    }
+    
     public RoadInfoDto getRoadInfo(String linkId) throws Exception {
         LiveRoadResponse live = fetchLiveRoad(linkId);
         RoadMetaResponse meta = fetchRoadMeta(linkId);
