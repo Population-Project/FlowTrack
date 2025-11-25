@@ -13,7 +13,7 @@ public class RoadDataProcessor {
     private final ExcelReader excelReader;
     private final RoadMultiThreadService roadMultiThreadService;
     private final RoadService roadService;
-    private final static String outPath = "seoul_road_11-3.csv";
+    private final static String outPath = "seoul_road_11-4.csv";
 
     /**
      * 엑셀에서 linkId 읽고 → TrafficService 호출 → 결과 리스트 반환
