@@ -1,4 +1,4 @@
-name: FlowTrack CSV Auto Update
+name: seoulroad
 
 concurrency:
   group: seoul-data-update
