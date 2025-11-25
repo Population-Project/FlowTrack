@@ -1,8 +1,12 @@
-name: FlowTrack CSV Auto Update
+name: seoul_area
+
+concurrency:
+  group: seoul-data-update
+  cancel-in-progress: false
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "5-55/10 * * * *"
   workflow_dispatch:
 
 permissions:
