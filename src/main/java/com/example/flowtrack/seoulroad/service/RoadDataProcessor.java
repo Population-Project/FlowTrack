@@ -11,20 +11,14 @@ import java.util.List;
 public class RoadDataProcessor {
 
     private final ExcelReader excelReader;
-    private final RoadMultiThreadService roadMultiThreadService;
-    private final RoadService roadService;
-    private final static String outPath = "seoul_road_11-3.csv";
+    private final RoadCsvWriter csvWriter;
+    private final static String outPath = "seoul_road_11-4.csv";
 
     /**
      * 엑셀에서 linkId 읽고 → TrafficService 호출 → 결과 리스트 반환
      */
     public void processExcel(String excelPath) throws Exception {
         List<String> linkIds = excelReader.readSeoulRoadLinkIds(excelPath);
-        roadMultiThreadService.fetchAndSave(linkIds, outPath);
-
-        for (String linkId : linkIds) {
-            roadService.getRoadInfo(linkId);
-            Thread.sleep(100);
-        }
+        csvWriter.writeCsv(linkIds, outPath);
     }
 }
