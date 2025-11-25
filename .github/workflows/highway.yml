@@ -45,8 +45,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 🔥 non-fast-forward 방지: 원격 최신 커밋 받아오기
-          git pull --rebase https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git main || true
+         
+          git pull --rebase --autostash https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git main || true
 
           git add .
           git commit -m "Auto update CSV data [$(date '+%Y-%m-%d %H:%M:%S')]" || echo "No changes to commit"
