@@ -3,19 +3,20 @@ package com.example.flowtrack.common.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
-@Configuration // 스프링 설정 클래스임을 나타냄, 싱글톤 보장
+@Configuration
 public class RestClientConfig {
 
-    @Bean // @Configuration보고 Bean으로 등록
+    @Bean
     public RestClient restClient() {
-        return RestClient.create(); // 기본 세팅으로 생성, 커스터마이징 시 .builder() 사용
+
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(3000);  // 서버와 연결: 3초
+        factory.setReadTimeout(5000);     // 응답 기다림: 5초
+
+        return RestClient.builder()
+                .requestFactory(factory)
+                .build();
     }
-
-    /**
-     RestClient란?
-     RestTemplate, WebClient와 비슷한 역할 (RestClient가 신버전)
-     JAVA에서 외부 REST API를 사용할 때 사용
-     */
-
 }
