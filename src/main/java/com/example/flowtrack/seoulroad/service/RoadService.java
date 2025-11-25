@@ -36,10 +36,6 @@ public class RoadService {
             travelTime = live.getRows().get(0).getPrcsTrvTime();
         }
 
-        return toRoadInfoDto(linkId, meta, speed, travelTime);
-    }
-
-    private RoadInfoDto toRoadInfoDto(String linkId, RoadMetaResponse meta, Double speed, Integer travelTime) {
         return new RoadInfoDto(
                 linkId,
                 meta != null ? meta.getRoadName() : null,
@@ -62,10 +58,7 @@ public class RoadService {
         String raw = wrap.path("raw").asText();
         if (!StringUtils.hasText(raw)) raw = xml;
 
-        LiveRoadResponse dto = xmlMapper.readValue(raw.getBytes(StandardCharsets.UTF_8), LiveRoadResponse.class);
-
-
-        return dto;
+        return xmlMapper.readValue(raw.getBytes(StandardCharsets.UTF_8), LiveRoadResponse.class);
     }
 
     private RoadMetaResponse fetchRoadMeta(String linkId) throws Exception {
@@ -74,6 +67,7 @@ public class RoadService {
                 .toUriString();
 
         String xml = restClient.get().uri(url).retrieve().body(String.class);
+
         JsonNode wrap = xmlMapper.readTree(xml.getBytes(StandardCharsets.UTF_8));
         String raw = wrap.path("raw").asText();
         if (!StringUtils.hasText(raw)) raw = xml;
@@ -82,8 +76,6 @@ public class RoadService {
         JsonNode row = doc.path("row");
         if (row.isArray() && row.size() > 0) row = row.get(0);
 
-        RoadMetaResponse dto = xmlMapper.treeToValue(row, RoadMetaResponse.class);
-
-        return dto;
+        return xmlMapper.treeToValue(row, RoadMetaResponse.class);
     }
 }
