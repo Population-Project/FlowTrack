@@ -1,49 +1,53 @@
-# name: FlowTrack CSV Auto Update
+name: FlowTrack CSV Auto Update
 
-# on:
-#   schedule:
-#     - cron: "40 */1 * * *"
-#   workflow_dispatch:
+concurrency:
+  group: seoul-data-update
+  cancel-in-progress: false
 
-# permissions:
-#   contents: write
+on:
+  schedule:
+    - cron: "40 */1 * * *"
+  workflow_dispatch:
 
-# jobs:
-#   run-flowtrack:
-#     runs-on: ubuntu-latest
+permissions:
+  contents: write
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-#         with:
-#           persist-credentials: false
-#           fetch-depth: 0
+jobs:
+  run-flowtrack:
+    runs-on: ubuntu-latest
 
-#       - name: Set up JDK 21
-#         uses: actions/setup-java@v4
-#         with:
-#           java-version: '21'
-#           distribution: 'temurin'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
-#       - name: Build with Gradle
-#         run: |
-#           chmod +x ./gradlew
-#           ./gradlew -x test bootJar
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
-#       - name: Run Road CLI (서울시 도로 교통)
-#         env:
-#           TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
-#         run: |
-#           java -Dspring.profiles.active=cli \
-#                -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
-#                --task=road
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew -x test bootJar
 
-#       - name: Commit CSV results
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         run: |
-#           git config --global user.name "github-actions[bot]"
-#           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#           git add .
-#           git commit -m "Auto update CSV data [$(date '+%Y-%m-%d %H:%M:%S')]" || echo "No changes to commit"
-#           git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
+      - name: Run Road CLI (Seoul Road Traffic)
+        env:
+          TOPIS_API_KEY: ${{ secrets.TOPIS_API_KEY }}
+        run: |
+          java -Dspring.profiles.active=cli \
+               -jar build/libs/FlowTrack-0.0.1-SNAPSHOT.jar \
+               --task=road
+
+      - name: Commit CSV results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto update CSV data [$(date '+%Y-%m-%d %H:%M:%S')]" || echo "No changes to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
