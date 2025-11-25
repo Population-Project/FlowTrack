@@ -1,4 +1,8 @@
-name: FlowTrack CSV Auto Update
+name: highway
+
+concurrency:
+  group: seoul-data-update
+  cancel-in-progress: false
 
 on:
   schedule:
