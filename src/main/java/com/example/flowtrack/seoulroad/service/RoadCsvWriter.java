@@ -22,12 +22,15 @@ public class RoadCsvWriter {
     public void writeCsv(List<String> linkIds, String outPath) throws Exception {
 
         File file = new File(outPath);
-        File parent = file.getParentFile();
-        if (parent != null && !parent.exists()) parent.mkdirs();
+        boolean fileExists = file.exists();
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(file, false))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
 
-            writer.println("API 호출 시간,link_id,road_name,st_node_nm,ed_node_nm,map_dist,reg_cd,speed,travel_time");
+            if (!fileExists) {
+                writer.println("API 호출 시간,link_id,road_name,st_node_nm,ed_node_nm,map_dist,reg_cd,speed,travel_time");
+            } else {
+                writer.println();
+            }
 
             for (String linkId : linkIds) {
 
