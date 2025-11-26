@@ -52,13 +52,16 @@ public class RoadCsvWriter {
                             nz(info.getTravelTime())
                     ));
 
-                    writer.flush();
-                    Thread.sleep(50);
-
                 } catch (Exception e) {
                     System.err.println("[ERROR] linkId 실패: " + linkId + " → " + e.getMessage());
                 }
             }
+
+            writer.println();
+            String now = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+            writer.println(String.format("# saved_count=%d, saved_at=%s", linkIds.size(), now));
         }
 
         System.out.println("CSV 저장 완료 → " + outPath);

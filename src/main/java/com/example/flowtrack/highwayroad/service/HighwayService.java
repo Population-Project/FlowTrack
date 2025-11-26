@@ -114,7 +114,11 @@ public class HighwayService {
                 );
                 writer.println(line);
             }
-            writer.flush();
+            writer.println();
+            String now = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+            writer.println(String.format("# saved_count=%d, saved_at=%s", data.size(), now));
         }
 
         System.out.println("고속도로 교통량 CSV 저장 완료: " + outPath);

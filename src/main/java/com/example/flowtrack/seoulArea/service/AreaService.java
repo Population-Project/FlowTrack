@@ -86,6 +86,11 @@ public class AreaService {
                 );
                 writer.println(line);
             }
+            writer.println();
+            String now = java.time.LocalDateTime.now()
+                    .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+            writer.println(String.format("# saved_count=%d, saved_at=%s", areas.size(), now));
         }
 
         System.out.println("모든 데이터 저장 완료: " + outPath);
