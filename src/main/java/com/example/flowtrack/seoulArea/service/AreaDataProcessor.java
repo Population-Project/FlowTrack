@@ -14,7 +14,7 @@ public class AreaDataProcessor {
 
     private final ExcelReader excelReader;
     private final AreaService areaService;
-    private final static String outPath = "seoul_area_11-4.csv";
+    private final static String outPath = "seoul_area_12-1.csv";
 
     public void processExcel(String excelPath) throws Exception {
         List<String> areaNames = excelReader.readSeoulAreaNames(excelPath);

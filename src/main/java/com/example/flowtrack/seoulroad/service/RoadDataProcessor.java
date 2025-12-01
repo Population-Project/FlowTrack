@@ -12,7 +12,7 @@ public class RoadDataProcessor {
 
     private final ExcelReader excelReader;
     private final RoadCsvWriter csvWriter;
-    private final static String outPath = "seoul_road_11-4.csv";
+    private final static String outPath = "seoul_road_12-1.csv";
 
     /**
      * 엑셀에서 linkId 읽고 → TrafficService 호출 → 결과 리스트 반환
