@@ -28,6 +28,8 @@ FlowTrack is a research internship project (25-2) that integrates multiple traff
 
 ## Project Structure
 
+![Pipeline Architecture](./assets/pipeline.png)
+
 ```
 src/main/java/com/example/flowtrack/
 ├── FlowTrackApplication.java          # Main application entry point
