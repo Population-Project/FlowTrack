@@ -123,6 +123,10 @@ ex:
 
 ### Steps
 
+> [!IMPORTANT]
+> In this repository, `.github` folder is renamed to `..github` in order to prevent automatic workflow.
+> If you want to execute it (by yourself), rename the folder back to `.github`.
+
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
